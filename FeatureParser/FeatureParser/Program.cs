@@ -514,7 +514,7 @@ namespace FeatureParser
             }
 
             workbook.Worksheets.Add(table, "name");
-            workbook.SaveAs("C:/Development/FeatureParser/data.xlsx");
+            workbook.SaveAs("./data.xlsx");
         }
         
         #endregion
