@@ -19,142 +19,7 @@ namespace FeatureParser
         private StreamWriter logFile;
 
         private Dictionary<string, KeywordData> keywordUsageData;
-
-        private static readonly HttpClient _Client = new HttpClient();
-
-
-        /// <summary>
-        /// Makes an async HTTP Request
-        /// </summary>
-        /// <param name="pMethod">Those methods you know: GET, POST, HEAD, etc...</param>
-        /// <param name="pUrl">Very predictable...</param>
-        /// <param name="pJsonContent">String data to POST on the server</param>
-        /// <param name="pHeaders">If you use some kind of Authorization you should use this</param>
-        /// <returns></returns>
-        private async Task<HttpResponseMessage> SendRequest(string pMethod, string pUrl, string pJsonContent, Dictionary<string, string> pHeaders)
-        {
-            var httpRequestMessage = new HttpRequestMessage();
-            
-            httpRequestMessage.RequestUri = new Uri(pUrl);
-            
-            // populate headers
-            if (pHeaders != null)
-            {
-                foreach (var head in pHeaders)
-                {
-                    httpRequestMessage.Headers.Add(head.Key, head.Value);
-                }
-            }
-
-            // send request
-            switch (pMethod.ToUpper())
-            {
-                case "POST":
-                    httpRequestMessage.Method = HttpMethod.Post;
-                    HttpContent httpContent = new StringContent(pJsonContent, Encoding.UTF8, "application/json");
-                    httpRequestMessage.Content = httpContent;
-                    break;
-                default:
-                    httpRequestMessage.Method = HttpMethod.Get;
-                    break;
-            }
-
-            return await _Client.SendAsync(httpRequestMessage);
-        }
-
-        public async Task<HttpResponseMessage> GetRequest(string pUrl, Dictionary<string, string> pHeaders)
-        {
-            return await SendRequest("GET", pUrl, null, pHeaders);
-        }
-
-        public async Task<HttpResponseMessage> PostRequest(string pUrl, string pJsonContent, Dictionary<string, string> pHeaders)
-        {
-            return await SendRequest("POST", pUrl, pJsonContent, pHeaders);
-        }
-
-        public async Task<String> GetCSRFTokenAsync()
-        {
-            var res = await GetRequest("https://tst-wus-corweb.promapponline.com/ranveer/Login.aspx", null);
-            var html = "";
-            foreach (var val in res.Headers.GetValues("Set-Cookie"))
-                if (val.Contains("__RequestVerificationToken="))
-                    html = val;
-            
-            var query = "__RequestVerificationToken=";
-            var start = html.IndexOf(query) + query.Length;
-            var end = html.IndexOf("; path=/;");
-            var csrf_token = html.Substring(start, (end - start));
-            
-            return csrf_token;
-        }
-
-
-        public async Task<HttpResponseMessage> LogIntoApplication(string csrf_token)
-        {
-            Dictionary<string, string> data = new Dictionary<string, string>();
-            data.Add("Content-Type", "multipart/form-data");
-
-            string body = "body: " +
-                            "{" +
-                            "mode: 'formdata'," +
-                                "formdata: [" +
-                                    "{ key: '__RequestVerificationToken', value: " + csrf_token + ", disabled: false, description: { content: '', type: 'text/plain'} }," +
-                                    "{ key: 'QuickLogin', value: 'Quick', disabled: false, description: { content: '', type: 'text/plain'} }" +
-                                "]" +
-                            "}";
-
-            return await PostRequest("https://tst-wus-corweb.promapponline.com/ranveer/Login.aspx", body, data);
-        }
-
-        public async Task<string> GetAuthorization()
-        {
-            string csrf_token = await GetCSRFTokenAsync();
-
-            if (csrf_token != null)
-                await LogIntoApplication(csrf_token);
-
-            return csrf_token;
-        }
-
-        public async Task CreateProcessAsync()
-        {
-            string csrf_token = await GetAuthorization();
-            Console.WriteLine(csrf_token);
-
-            //Dictionary<string, string> data = new Dictionary<string, string>();
-            //data.Add("__RequestVerificationToken", csrf_token);
-            //data.Add("Id", "-1");
-            //data.Add("ProcessState", "0");
-            //data.Add("Name", "API Process updated");
-            //data.Add("OwnerName", "Shaun Field");
-            //data.Add("OwnerId", "38");
-            //data.Add("ExpertName", "Shaun Field");
-            //data.Add("ExpertId", "38");
-            //data.Add("ProcessGroupId", "216");
-            //data.Add("Objective", "o");
-            Dictionary<string, string> data = new Dictionary<string, string>();
-            data.Add("Content-Type", "multipart/form-data");
-
-
-            if (csrf_token != null)
-            {
-                Console.WriteLine("waited till login");
-                string json = "{" +
-                                "'__RequestVerificationToken': " + csrf_token + "," +
-                                "'Id': '-1'," +
-                                "'ProcessState': '0'," +
-                                "'Name': 'Process from requesthandler'," +
-                                "'OwnerName': 'Shaun Field'," +
-                                "'OwnerId': '38'," +
-                                "'ExpertName': 'Shaun Field'," +
-                                "'ExpertId': '38'," +
-                                "'ProcessGroupId': '216'," +
-                                "'Objective': 'o'" +
-                                "}";
-                _ = await PostRequest("https://tst-wus-corweb.promapponline.com/ranveer/Process/Edit/CreateProcess", json, data);
-            }
-        }
-
+        
         private class KeywordData
         {
             public int ParameterCount { get; set; }
@@ -320,8 +185,7 @@ namespace FeatureParser
             //    Log(s);
         }
         #endregion
-
-
+        
         #region Data Collection
         // prepare keywordUsageData object
         public void PrepareKeywordUsageDataObject()
@@ -660,23 +524,21 @@ namespace FeatureParser
         {
             Program obj = new Program();
 
-            //obj.GetFileNamesOfDirectoryRecursively("C:/Development/Promapp/Promapp.Test.UI/Steps/CommonSetupSteps");
-            //obj.CollectGivenKeywords();
+            obj.GetFileNamesOfDirectoryRecursively("C:/Development/Promapp/Promapp.Test.UI/Steps/CommonSetupSteps");
+            obj.CollectGivenKeywords();
 
-            //obj.PrepareKeywordUsageDataObject();
+            obj.PrepareKeywordUsageDataObject();
 
-            ////obj.ParseFeatureFile("");
+            //obj.ParseFeatureFile("");
 
-            //obj.GetFileNamesOfDirectoryRecursively("C:/Development/Promapp/Promapp.Test.UI/SpecFlow");
-            ////obj.PrintAllFileName();
+            obj.GetFileNamesOfDirectoryRecursively("C:/Development/Promapp/Promapp.Test.UI/SpecFlow");
+            //obj.PrintAllFileName();
 
-            //obj.ParseAllFeatureFiles();
-            ////obj.LogKeywordUsage();
-            ////obj.WriteToExcel();
+            obj.ParseAllFeatureFiles();
+            //obj.LogKeywordUsage();
             //obj.WriteToExcel();
+            obj.WriteToExcel();
 
-            await obj.CreateProcessAsync();
-           
         }
     }
 }

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Development\\FeatureParser\\FeatureParser\\FeatureParser\\FeatureParser.csproj": {}
+    "C:\\Development\\FeatureParserRepo\\FeatureParser\\FeatureParser\\FeatureParser\\FeatureParser.csproj": {}
   },
   "projects": {
-    "C:\\Development\\FeatureParser\\FeatureParser\\FeatureParser\\FeatureParser.csproj": {
+    "C:\\Development\\FeatureParserRepo\\FeatureParser\\FeatureParser\\FeatureParser\\FeatureParser.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Development\\FeatureParser\\FeatureParser\\FeatureParser\\FeatureParser.csproj",
+        "projectUniqueName": "C:\\Development\\FeatureParserRepo\\FeatureParser\\FeatureParser\\FeatureParser\\FeatureParser.csproj",
         "projectName": "FeatureParser",
-        "projectPath": "C:\\Development\\FeatureParser\\FeatureParser\\FeatureParser\\FeatureParser.csproj",
+        "projectPath": "C:\\Development\\FeatureParserRepo\\FeatureParser\\FeatureParser\\FeatureParser\\FeatureParser.csproj",
         "packagesPath": "C:\\Users\\singhar\\.nuget\\packages\\",
-        "outputPath": "C:\\Development\\FeatureParser\\FeatureParser\\FeatureParser\\obj\\",
+        "outputPath": "C:\\Development\\FeatureParserRepo\\FeatureParser\\FeatureParser\\FeatureParser\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\singhar\\AppData\\Roaming\\NuGet\\NuGet.Config",
